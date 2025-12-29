@@ -28,6 +28,9 @@ func NewHandle() *handle {
 func (h *handle) ConfigHandler(r *chi.Mux) {
 	r.Use(middleware.StripSlashes)
 
+	// TODO: Do a middleware for actual authentication
+	// TODO: Create the email service
+
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Post("/login", h.authController.Login)
 		r.Post("/register", h.authController.Register)
