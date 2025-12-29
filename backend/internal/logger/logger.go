@@ -7,10 +7,20 @@ import (
 	prefixed "github.com/x-cray/logrus-prefixed-formatter"
 )
 
-func InitLogger() *log.Logger {
+var logger *log.Logger
+
+func GetLogger() *log.Logger {
+	if logger != nil {
+		return logger
+	}
+	initLogger()
+	return logger
+}
+
+func initLogger() {
 	log.SetFormatter(&log.JSONFormatter{})
 	log.SetOutput(os.Stdout)
-	return &log.Logger{
+	logger = &log.Logger{
 		Out:   os.Stderr,
 		Level: log.DebugLevel,
 		Formatter: &prefixed.TextFormatter{
