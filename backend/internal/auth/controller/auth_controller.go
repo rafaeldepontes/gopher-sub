@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"net/http"
 
@@ -32,7 +33,15 @@ func (c *authController) Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	// Do all the token logic after...
+
+	var token model.TokenResponse
+	token.Token = base64.RawURLEncoding.EncodeToString([]byte("allowed"))
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(token)
+
+	c.log.Infoln("Log in was a success")
 }
 
 func (c *authController) Register(w http.ResponseWriter, r *http.Request) {
