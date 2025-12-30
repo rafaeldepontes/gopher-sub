@@ -36,7 +36,7 @@ func (s *authService) Login(userReq *model.UserReq) error {
 		return msg.ErrInvalidPassword
 	}
 
-	s.log.Infof("Registering a new user, email: %s\n", userReq.Email)
+	s.log.Infof("Log in attempt to email: %s\n", userReq.Email)
 
 	user, err := s.authRepo.FindByEmail(userReq.Email)
 	if err != nil {
@@ -49,8 +49,6 @@ func (s *authService) Login(userReq *model.UserReq) error {
 	); err != nil {
 		return msg.ErrInvalidCredentials
 	}
-
-	// Token logic...
 	return nil
 }
 
