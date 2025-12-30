@@ -1,6 +1,10 @@
 package service
 
 import (
+	"time"
+
+	"github.com/rafaeldepontes/gopher-sub/internal/email"
+	"github.com/rafaeldepontes/gopher-sub/internal/email/service"
 	"github.com/rafaeldepontes/gopher-sub/internal/logger"
 	"github.com/rafaeldepontes/gopher-sub/internal/subscription"
 	"github.com/rafaeldepontes/gopher-sub/internal/subscription/repository"
@@ -8,14 +12,16 @@ import (
 )
 
 type subService struct {
-	subRepo subscription.Repository
-	log     *logrus.Logger
+	emailSvc email.Service
+	subRepo  subscription.Repository
+	log      *logrus.Logger
 }
 
 func NewService() subscription.Service {
 	return &subService{
-		subRepo: repository.NewRepository(),
-		log:     logger.GetLogger(),
+		emailSvc: service.NewService(),
+		subRepo:  repository.NewRepository(),
+		log:      logger.GetLogger(),
 	}
 }
 
@@ -23,15 +29,22 @@ func NewService() subscription.Service {
 func (s *subService) Subscribe(id int64) error {
 	s.log.Infoln("Subscribing the user:", id)
 	// fake a payment service.
-	// ...
+	time.Sleep(2 * time.Second)
 
 	// subscribe the user
 	if err := s.subRepo.SubscribeUser(id); err != nil {
 		return err
 	}
 
+	user, err := s.subRepo.FindById(id)
+	if err != nil {
+		return err
+	}
+
 	// sends a email
-	// WIP
+	if err := s.emailSvc.SendMail(user); err != nil {
+		return err
+	}
 
 	s.log.Infoln("Subscription done successfully")
 	return nil

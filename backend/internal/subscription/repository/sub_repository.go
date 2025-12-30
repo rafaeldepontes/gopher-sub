@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 
+	"github.com/rafaeldepontes/gopher-sub/internal/auth/model"
 	"github.com/rafaeldepontes/gopher-sub/internal/logger"
 	"github.com/rafaeldepontes/gopher-sub/internal/subscription"
 	"github.com/rafaeldepontes/gopher-sub/pkg/database/postgres"
@@ -34,6 +35,29 @@ func (r *subRepository) SubscribeUser(id int64) error {
 		return err
 	}
 	qtdAffected, _ := result.RowsAffected()
+
 	r.log.Infoln("rows affected, ", qtdAffected)
 	return nil
+}
+
+// FindByEmail implements [auth.Repository].
+func (r *subRepository) FindById(id int64) (*model.User, error) {
+	query := `
+		SELECT id, email, hashed_password, created_at FROM users u where u.id = $1
+	`
+	var user model.User
+	if err := r.db.QueryRow(
+		query,
+		id,
+	).Scan(
+		&user.ID,
+		&user.Email,
+		&user.HashedPassword,
+		&user.CreatedAt,
+	); err != nil {
+		r.log.Errorln("couldn't find user, ", err)
+		return nil, err
+	}
+
+	return &user, nil
 }
