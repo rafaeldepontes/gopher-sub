@@ -1,10 +1,16 @@
 "use client"
 import Link from "next/link"
 
-const FormsButton = ({ isLogin }: { isLogin: boolean }) => {
+const FormsButton = ({
+    isLogin,
+    handleSubmit
+}: {
+    isLogin: boolean,
+    handleSubmit: () => Promise<void>
+}) => {
     return (
         <div className="flex flex-col gap-3">
-            <button className="w-full rounded-md bg-white text-black py-2 text-sm font-medium hover:opacity-90 transition">
+            <button className="w-full rounded-md bg-white text-black py-2 text-sm font-medium hover:opacity-90 transition" onClick={() => handleSubmit()}>
                 {isLogin ? "Login" : "Register"}
             </button>
 

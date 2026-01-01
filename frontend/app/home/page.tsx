@@ -1,16 +1,21 @@
-import SubButton from "@/components/SubButton"
+"use client";
+
+import SubButton from "@/components/SubButton";
 
 const HomePage = () => {
-    // Adding some type of context for holding the users data after the log in...
-
     return (
-        <>
-            <h1>Hi random user!</h1>
-            <br />
-            <p>click here to receive news about our product:</p>
-            <SubButton />
-        </>
-    )
-}
+        <div className="min-h-screen flex items-center justify-center">
+            <div className="w-full max-w-sm rounded-xl border border-[var(--border)] bg-[var(--surface)] p-6 flex flex-col gap-4">
+                <h1 className="text-lg font-semibold">Hi random user!</h1>
 
-export default HomePage
+                <p className="text-sm text-[var(--muted)]">
+                    Click here to receive news about our product:
+                </p>
+
+                <SubButton />
+            </div>
+        </div>
+    );
+};
+
+export default HomePage;
