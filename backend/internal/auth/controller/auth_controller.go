@@ -28,14 +28,17 @@ func (c *authController) Login(w http.ResponseWriter, r *http.Request) {
 	var userReq model.UserReq
 	json.NewDecoder(r.Body).Decode(&userReq)
 
-	if err := c.authService.Login(&userReq); err != nil {
+	id, err := c.authService.Login(&userReq)
+	if err != nil {
 		c.log.Errorln("Something went wrong log in: ", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	var token model.TokenResponse
-	token.Token = base64.RawURLEncoding.EncodeToString([]byte("allowed"))
+	token := model.TokenResponse{
+		ID:    id,
+		Token: base64.RawURLEncoding.EncodeToString([]byte("allowed")),
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

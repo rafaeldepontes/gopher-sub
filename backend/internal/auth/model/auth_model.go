@@ -16,5 +16,6 @@ type UserReq struct {
 }
 
 type TokenResponse struct {
+	ID    int64  `json:"id"`
 	Token string `json:"token"`
 }

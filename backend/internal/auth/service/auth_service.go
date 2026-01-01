@@ -27,29 +27,29 @@ func NewService() auth.Service {
 }
 
 // Login implements [auth.Service].
-func (s *authService) Login(userReq *model.UserReq) error {
+func (s *authService) Login(userReq *model.UserReq) (int64, error) {
 	if userReq.Email == "" {
-		return msg.ErrInvalidEmail
+		return 0, msg.ErrInvalidEmail
 	}
 
 	if userReq.Password == "" || len(userReq.Password) <= 4 {
-		return msg.ErrInvalidPassword
+		return 0, msg.ErrInvalidPassword
 	}
 
 	s.log.Infof("Log in attempt to email: %s\n", userReq.Email)
 
 	user, err := s.authRepo.FindByEmail(userReq.Email)
 	if err != nil {
-		return msg.ErrUserNotFound
+		return 0, msg.ErrUserNotFound
 	}
 
 	if err = bcrypt.CompareHashAndPassword(
 		[]byte(user.HashedPassword),
 		[]byte(userReq.Password),
 	); err != nil {
-		return msg.ErrInvalidCredentials
+		return 0, msg.ErrInvalidCredentials
 	}
-	return nil
+	return user.ID, nil
 }
 
 // Register implements [auth.Service].
