@@ -69,6 +69,9 @@ func (s *authService) Register(userReq *model.UserReq) error {
 		return msg.ErrUserAlreadyExist
 	}
 
+	// Using bcrypt instead of argo because it's simpler and faster. And also because this is
+	// just a POC! This isn't the actual production code... If I were to use a REAL hash
+	// algorithm, I would obviously choose Argo with ArgoID and also a pepper...
 	hp, err := bcrypt.GenerateFromPassword([]byte(userReq.Password), Cost)
 	if err != nil {
 		return msg.ErrInternalServer
